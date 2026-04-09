@@ -4,9 +4,9 @@
 #include <string.h>
 #include <locale.h>
 
-// ============================================================
+
 //   PROTOTIPOS - avisa ao compilador que essas funcoes existem
-// ============================================================
+
 int lerNumero();
 void jogoPerguntas();
 void jogoCobraCaixa();
@@ -17,9 +17,9 @@ void atacar(int furia[], int ativa[], int jogador);
 void dividir(int furia[], int ativa[], int jogador);
 void jogoGousmasWar();
 
-// ============================================================
+
 //   MENU PRINCIPAL
-// ============================================================
+
 int main() {
     setlocale(LC_ALL, "Portuguese");
     srand(time(NULL));
@@ -62,9 +62,9 @@ int main() {
     return 0;
 }
 
-// ============================================================
+
 //   FUNCAO AUXILIAR - le um numero e impede digitar letras
-// ============================================================
+
 int lerNumero() {
     int num;
     while (1) {
@@ -78,9 +78,9 @@ int lerNumero() {
     }
 }
 
-// ============================================================
+
 //   JOGO 1 - PERGUNTAS E RESPOSTAS
-// ============================================================
+
 void jogoPerguntas() {
     int resposta, dnv;
     char continuar;
@@ -195,9 +195,9 @@ void jogoPerguntas() {
     } while (dnv != 2);
 }
 
-// ============================================================
+
 //   JOGO 2 - COBRA NA CAIXA
-// ============================================================
+
 void jogoCobraCaixa() {
     int escolha1, escolha2, jogadorAtual, caixa, cobra, botao, dnv;
     char nome1[50], nome2[50];
@@ -302,9 +302,9 @@ void jogoCobraCaixa() {
     } while (dnv != 2);
 }
 
-// ============================================================
+
 //   JOGO 3 - GOUSMAS WAR
-// ============================================================
+
 
 // mostra na tela a furia e o estado de todas as gousmas
 void exibirEstado(int furia[], int ativa[]) {
