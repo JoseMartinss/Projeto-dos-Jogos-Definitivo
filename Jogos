@@ -523,7 +523,7 @@ void jogoGousmasWar() {
             printf("  --- Turno do Jogador %d ---\n", jogadorAtual);
             printf("  1 - Atacar\n");
             printf("  2 - Dividir\n");
-            printf("  Escolha uma acao: ");
+            printf("  Escolha uma ação: ");
 
             // repete ate receber uma acao valida
             while (1) {
