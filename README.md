@@ -38,6 +38,7 @@ O projeto se trata da produção de alguns jogos utilizando a linguagem de progr
 este chat sera usado para eu tirar duvidas sobre os meus codigos relacionados a esse trabalho"
 2) "estou fazendo esse jogo, mas o codigo esta dando um erro de logica: quando eu escolho a opção de jogar o jogo novamente as caixas escolhidas
  na partida passada continuam sendo consideradas como escolhidas, me explique como posso resolver isso."
+
 3)"eu ainda nao estudei o comando "void", como ele funciona?"
 
 
