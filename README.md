@@ -33,9 +33,11 @@ O código contêm um menu com o acesso a 3 jogos distintos: Perguntas e Resposta
 ## Como a I.A foi utilizada
 - Utilizada para a aprendizagem de novos conceitos que ainda não conheciamos, como: void, random, conhecimento de novas bibliotecas, vetores, matrizes, barrar a digitação de letras.
 - Alguns Prompts utilizados:
+
 1) "sou um aluno do primeiro periodo de engenharia da computação, estou trabalhando em um projeto passado pelo professor de programação.
 O projeto se trata da produção de alguns jogos utilizando a linguagem de programação C.
 este chat sera usado para eu tirar duvidas sobre os meus codigos relacionados a esse trabalho"
+
 2) "estou fazendo esse jogo, mas o codigo esta dando um erro de logica: quando eu escolho a opção de jogar o jogo novamente as caixas escolhidas
  na partida passada continuam sendo consideradas como escolhidas, me explique como posso resolver isso."
 
