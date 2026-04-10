@@ -5,7 +5,7 @@
   
   <h1>Jogos na Linguagem C</h1>
   <p> Equipe do Projeto: José Pedro Martins e Matheus de Aviz
-    Neste projeto desenvolvemos 3 jogos na linguagem C, com todos os jogos sendo executados pelo próprio terminal.
+   
   </p>
   
 
