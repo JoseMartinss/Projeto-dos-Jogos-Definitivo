@@ -15,14 +15,14 @@
 ## 🚀 Sobre os jogos
 O código contêm um menu com o acesso a 3 jogos distintos: Perguntas e Respostas, Cobra na Caixa e Gousmas War.
 
-1- Perguntas e Respostas
+1- Perguntas e Respostas:
  é um jogo simples em que o usuário precisa responder 4 perguntas selecionadas e tentar acertar as respostas.
 
-2- Cobra Na Caixa
+2- Cobra Na Caixa:
   Um jogo para 2 jogadores em que o jogador da vez precisa selecionar uma caixa dentre 5, caso a caixa escolhida contenha uma Cobra o jogador perde, caso
   a caixa escolhida contenha um Botão o jogador vence.
 
-3- Gousmas War
+3- Gousmas War:
   O jogo mais complexo dentre os 3, neste jogo cada jogador possui duas "gousmas", que são como personagens para atacar, cada gousma pode atacar e absorver fúria, a gousma que chegar a 5 de fúria é
   eliminada, vence quem sobreviver por último.
 
