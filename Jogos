@@ -4,24 +4,22 @@
 #include <string.h>
 #include <locale.h>
 
+/* ===== PROTÓTIPOS ===== */
 
-//   PROTOTIPOS - avisa ao compilador que essas funcoes existem
-
-int lerNumero();
+int  lerNumero();
 void jogoPerguntas();
 void jogoCobraCaixa();
+void jogoGousmasWar();
 void exibirEstado(int furia[], int ativa[]);
 void verificarDestruicao(int furia[], int ativa[]);
-int verificarFimDeJogo(int ativa[]);
-void atacar(int furia[], int ativa[], int jogador);
-void dividir(int furia[], int ativa[], int jogador);
-void jogoGousmasWar();
+int  verificarFimDeJogo(int ativa[]);
+int  atacar(int furia[], int ativa[], int jogador);
+int  dividir(int furia[], int ativa[], int jogador);
 
-
-//   MENU PRINCIPAL
+/* ===== MENU PRINCIPAL ===== */
 
 int main() {
-    setlocale(LC_ALL, "Portuguese");
+    setlocale(LC_ALL, "Portuguese_Brazil");
     srand(time(NULL));
 
     int opcao;
@@ -34,26 +32,26 @@ int main() {
         printf("  2 - Cobra na Caixa\n");
         printf("  3 - Gousmas War\n");
         printf("  4 - Sair\n\n");
-        printf("  Escolha uma opção: ");
+        printf("  Escolha uma opcao: ");
 
-        // repete ate receber uma opcao valida
         while (1) {
             if (scanf("%d", &opcao) != 1) {
                 while (getchar() != '\n');
-                printf("  Digite apenas numeros! Escolha de 1 a 4: ");
+                printf("  Entrada invalida! Escolha de 1 a 4: ");
                 continue;
             }
-            if (opcao >= 1 && opcao <= 4)
-                break;
+            if (opcao >= 1 && opcao <= 4) break;
             printf("  Opcao invalida! Escolha de 1 a 4: ");
         }
 
         system("cls");
 
-        if (opcao == 1) jogoPerguntas();
-        else if (opcao == 2) jogoCobraCaixa();
-        else if (opcao == 3) jogoGousmasWar();
-        else if (opcao == 4) printf("\n  Ate logo!\n\n");
+        switch (opcao) {
+            case 1: jogoPerguntas();   break;
+            case 2: jogoCobraCaixa();  break;
+            case 3: jogoGousmasWar();  break;
+            case 4: printf("\n  Ate logo!\n\n"); break;
+        }
 
         if (opcao != 4) system("cls");
 
@@ -62,27 +60,82 @@ int main() {
     return 0;
 }
 
+/* ===== UTILITÁRIOS ===== */
 
-//   FUNCAO AUXILIAR - le um numero e impede digitar letras
-
+/* Lê um inteiro, rejeitando entradas não numéricas */
 int lerNumero() {
     int num;
     while (1) {
-        if (scanf("%d", &num) != 1) {
-            printf("Entrada invalida! Digite apenas numeros.\n");
-            while (getchar() != '\n');
-        } else {
+        if (scanf("%d", &num) == 1) {
             while (getchar() != '\n');
             return num;
         }
+        printf("Entrada invalida! Digite apenas numeros: ");
+        while (getchar() != '\n');
     }
 }
 
+/* Aguarda qualquer letra para continuar */
+static void pausar() {
+    char c;
+    printf("  Pressione qualquer letra para continuar: ");
+    scanf(" %c", &c);
+    system("cls");
+}
 
-//   JOGO 1 - PERGUNTAS E RESPOSTAS
+/* Pergunta se o jogador quer jogar novamente; retorna 1 se sim */
+static int jogarNovamente() {
+    int dnv;
+    printf("\n ** DESEJA JOGAR NOVAMENTE? **\n");
+    printf("      1 - SIM         2 - NAO\n");
+    printf("  Escolha: ");
+
+    while (1) {
+        dnv = lerNumero();
+        if (dnv == 1 || dnv == 2) break;
+        printf("  Escolha 1 ou 2: ");
+    }
+
+    if (dnv == 1) system("cls");
+    return (dnv == 1);
+}
+
+/* ===== JOGO 1: PERGUNTAS E RESPOSTAS ===== */
+
+/* Exibe uma pergunta e retorna 1 se acertou, 0 caso contrário */
+static int fazerPergunta(const char *titulo,
+                         const char *enunciado,
+                         const char *alt1,
+                         const char *alt2,
+                         const char *alt3,
+                         const char *alt4,
+                         int correta,
+                         const char *feedback_certo,
+                         const char *gabarito)
+{
+    int resposta;
+
+    printf("  +--------------------------------------+\n");
+    printf("  |  %-36s|\n", titulo);
+    printf("  +--------------------------------------+\n\n");
+    printf("  %s\n", enunciado);
+    printf("  1 - %s\n  2 - %s\n  3 - %s\n  4 - %s\n", alt1, alt2, alt3, alt4);
+    printf("\n  Digite o numero da sua resposta: ");
+
+    resposta = lerNumero();
+
+    if (resposta == correta)
+        printf("\n  RESPOSTA CORRETA! %s\n\n", feedback_certo);
+    else if (resposta < 1 || resposta > 4)
+        printf("\n  RESPOSTA INVALIDA! Resposta certa: %s\n\n", gabarito);
+    else
+        printf("\n  RESPOSTA INCORRETA! Resposta certa: %s\n\n", gabarito);
+
+    pausar();
+    return (resposta == correta);
+}
 
 void jogoPerguntas() {
-    int resposta, dnv;
     char continuar;
 
     do {
@@ -92,176 +145,106 @@ void jogoPerguntas() {
         printf("  === DESCRICAO ===\n");
         printf("  Serao apresentadas 5 perguntas com 4 alternativas cada.\n");
         printf("  Digite o numero da alternativa correta!\n\n");
-        printf("  Pressione Enter para continuar\n");
+        printf("  Pressione Enter para continuar: ");
         scanf("%c", &continuar);
         system("cls");
 
-        // pergunta 1
-        printf("  +--------------------------------------+\n");
-        printf("  |           PRIMEIRA PERGUNTA          |\n");
-        printf("  +--------------------------------------+\n\n");
-        printf("  Em Star Wars, qual e o nome da estacao espacial capaz de destruir planetas?\n");
-        printf("  1 - Star Forge\n  2 - Eclipse\n  3 - Estrela da Morte\n  4 - Base Starkiller\n");
-        printf("\n  Digite o numero da sua resposta: ");
-        scanf("%d", &resposta);
-        if (resposta == 3)
-            printf("\n  RESPOSTA CORRETA! Pelo visto alguem assistiu Star Wars.\n\n");
-        else if (resposta < 1 || resposta > 4)
-            printf("\n  RESPOSTA INVALIDA! Resposta certa: Estrela da Morte\n\n");
-        else
-            printf("\n  RESPOSTA INCORRETA! Resposta certa: Estrela da Morte\n\n");
-        printf("  Pressione qualquer letra para continuar: ");
-        scanf(" %c", &continuar);
-        system("cls");
+        fazerPergunta(
+            "PRIMEIRA PERGUNTA",
+            "Em Star Wars, qual e o nome da estacao espacial capaz de destruir planetas?",
+            "Star Forge", "Eclipse", "Estrela da Morte", "Base Starkiller",
+            3, "Pelo visto alguem assistiu Star Wars.", "Estrela da Morte"
+        );
 
-        // pergunta 2
-        printf("  +--------------------------------------+\n");
-        printf("  |            SEGUNDA PERGUNTA          |\n");
-        printf("  +--------------------------------------+\n\n");
-        printf("  Segundo a creepypasta original, quem seria o Herobrine?\n");
-        printf("  1 - O Notch\n  2 - Um NPC secreto da Mojang\n  3 - Um bug do servidor\n  4 - O suposto irmao falecido de Notch\n");
-        printf("\n  Digite o numero da sua resposta: ");
-        scanf("%d", &resposta);
-        if (resposta == 4)
-            printf("\n  RESPOSTA CORRETA! Epoca boa ne?\n\n");
-        else if (resposta < 1 || resposta > 4)
-            printf("\n  RESPOSTA INVALIDA! Resposta certa: O suposto irmao falecido de Notch\n\n");
-        else
-            printf("\n  RESPOSTA INCORRETA! Resposta certa: O suposto irmao falecido de Notch\n\n");
-        printf("  Pressione qualquer letra para continuar: ");
-        scanf(" %c", &continuar);
-        system("cls");
+        fazerPergunta(
+            "SEGUNDA PERGUNTA",
+            "Segundo a creepypasta original, quem seria o Herobrine?",
+            "O Notch", "Um NPC secreto da Mojang",
+            "Um bug do servidor", "O suposto irmao falecido de Notch",
+            4, "Epoca boa ne?", "O suposto irmao falecido de Notch"
+        );
 
-        // pergunta 3
-        printf("  +--------------------------------------+\n");
-        printf("  |           TERCEIRA PERGUNTA          |\n");
-        printf("  +--------------------------------------+\n\n");
-        printf("  Sobre a serie Sandman, qual e o verdadeiro nome do personagem conhecido como Sonho?\n");
-        printf("  1 - Somnium\n  2 - Morfeus\n  3 - Dream\n  4 - Azazel\n");
-        printf("\n  Digite o numero da sua resposta: ");
-        scanf("%d", &resposta);
-        if (resposta == 2)
-            printf("\n  RESPOSTA CORRETA! Serie muito boa!\n\n");
-        else if (resposta < 1 || resposta > 4)
-            printf("\n  RESPOSTA INVALIDA! Resposta certa: Morfeus\n\n");
-        else
-            printf("\n  RESPOSTA INCORRETA! Resposta certa: Morfeus\n\n");
-        printf("  Pressione qualquer letra para continuar: ");
-        scanf(" %c", &continuar);
-        system("cls");
+        fazerPergunta(
+            "TERCEIRA PERGUNTA",
+            "Sobre a serie Sandman, qual e o verdadeiro nome do personagem conhecido como Sonho?",
+            "Somnium", "Morfeus", "Dream", "Azazel",
+            2, "Serie muito boa!", "Morfeus"
+        );
 
-        // pergunta 4
-        printf("  +--------------------------------------+\n");
-        printf("  |           QUARTA PERGUNTA            |\n");
-        printf("  +--------------------------------------+\n\n");
-        printf("  Comendo determinado numero de bananas voce morre por radiacao, que numero e esse?\n");
-        printf("  1 - 100000000\n  2 - 80000000\n  3 - meio bananao grosso\n  4 - 18000\n");
-        printf("\n  Digite o numero da sua resposta: ");
-        scanf("%d", &resposta);
-        if (resposta == 2)
-            printf("\n  RESPOSTA CORRETA! Temos um especialista em bananas aqui!\n\n");
-        else if (resposta < 1 || resposta > 4)
-            printf("\n  RESPOSTA INVALIDA! Resposta certa: 80000000\n\n");
-        else
-            printf("\n  RESPOSTA INCORRETA! Resposta certa: 80000000\n\n");
-        printf("  Pressione qualquer letra para continuar: ");
-        scanf(" %c", &continuar);
-        system("cls");
+        fazerPergunta(
+            "QUARTA PERGUNTA",
+            "Comendo determinado numero de bananas voce morre por radiacao, que numero e esse?",
+            "100000000", "80000000", "meio bananao grosso", "18000",
+            2, "Temos um especialista em bananas aqui!", "80000000"
+        );
 
-        // pergunta 5
-        printf("  +--------------------------------------+\n");
-        printf("  |           QUINTA PERGUNTA            |\n");
-        printf("  +--------------------------------------+\n\n");
-        printf("  Qual personagem dos quadrinhos escolheu seu proprio ator nos cinemas?\n");
-        printf("  1 - Homem Aranha\n  2 - Batman\n  3 - Nick Fury\n  4 - Superman\n");
-        printf("\n  Digite o numero da sua resposta: ");
-        scanf("%d", &resposta);
-        if (resposta == 3)
-            printf("\n  RESPOSTA CORRETA! Muito bem!!\n\n");
-        else if (resposta < 1 || resposta > 4)
-            printf("\n  RESPOSTA INVALIDA! Resposta certa: Nick Fury\n\n");
-        else
-            printf("\n  RESPOSTA INCORRETA! Resposta certa: Nick Fury\n\n");
-        printf("  Pressione qualquer letra para continuar: ");
-        scanf(" %c", &continuar);
-        system("cls");
+        fazerPergunta(
+            "QUINTA PERGUNTA",
+            "Qual personagem dos quadrinhos escolheu seu proprio ator nos cinemas?",
+            "Homem Aranha", "Batman", "Nick Fury", "Superman",
+            3, "Muito bem!!", "Nick Fury"
+        );
 
-        printf("\n ** DESEJA JOGAR NOVAMENTE? **\n");
-        printf("\n      1- SIM         2- NAO      \n");
-        printf("Escolha: ");
-        dnv = lerNumero();
-        if (dnv != 2) system("cls");
-
-    } while (dnv != 2);
+    } while (jogarNovamente());
 }
 
+/* ===== JOGO 2: COBRA NA CAIXA ===== */
 
-//   JOGO 2 - COBRA NA CAIXA
+/* Retorna o nome correspondente à escolha */
+static const char *nomeCobra(int escolha) {
+    static const char *nomes[] = {
+        "robertinho do grau",
+        "geremias",
+        "steave",
+        "olavo de carvalho",
+        "jalin rabei",
+        "ronaldinho gaucho",
+        "20comer 70correr"
+    };
+    return nomes[escolha - 1];
+}
 
 void jogoCobraCaixa() {
-    int escolha1, escolha2, jogadorAtual, caixa, cobra, botao, dnv;
-    char nome1[50], nome2[50];
-
     do {
         int caixas[5] = {0};
+        int escolha1, escolha2, jogadorAtual, caixa, cobra, botao;
+        const char *nome1, *nome2;
 
         printf("Escolha um nome:\n");
         printf("1 - robertinho do grau\n2 - geremias\n3 - steave\n");
-        printf("4 - olavo de carvalho\n5 - jalin rabei\n6 - ronaldinho gaucho\n7 - 20comer 70correr\n");
+        printf("4 - olavo de carvalho\n5 - jalin rabei\n");
+        printf("6 - ronaldinho gaucho\n7 - 20comer 70correr\n");
 
-        // jogador 1 escolhe o nome
         while (1) {
             printf("\nJogador 1 escolha um numero: ");
-            int v1 = lerNumero();
-            if (v1 >= 1 && v1 <= 7) { escolha1 = v1; break; }
-            else printf("Valor invalido!\n");
+            escolha1 = lerNumero();
+            if (escolha1 >= 1 && escolha1 <= 7) break;
+            printf("Valor invalido!\n");
         }
 
-        // jogador 2 escolhe o nome
         while (1) {
             printf("\nJogador 2 escolha um numero: ");
-            int v2 = lerNumero();
-            if (v2 >= 1 && v2 <= 7) { escolha2 = v2; break; }
-            else printf("Valor invalido!\n");
+            escolha2 = lerNumero();
+            if (escolha2 >= 1 && escolha2 <= 7) break;
+            printf("Valor invalido!\n");
         }
 
-        // atribui o nome ao jogador 1
-        switch (escolha1) {
-            case 1: strcpy(nome1, "robertinho do grau"); break;
-            case 2: strcpy(nome1, "geremias"); break;
-            case 3: strcpy(nome1, "steave"); break;
-            case 4: strcpy(nome1, "olavo de carvalho"); break;
-            case 5: strcpy(nome1, "jalin rabei"); break;
-            case 6: strcpy(nome1, "ronaldinho gaucho"); break;
-            case 7: strcpy(nome1, "20comer 70correr"); break;
-        }
-
-        // atribui o nome ao jogador 2
-        switch (escolha2) {
-            case 1: strcpy(nome2, "robertinho do grau"); break;
-            case 2: strcpy(nome2, "geremias"); break;
-            case 3: strcpy(nome2, "steave"); break;
-            case 4: strcpy(nome2, "olavo de carvalho"); break;
-            case 5: strcpy(nome2, "jalin rabei"); break;
-            case 6: strcpy(nome2, "ronaldinho gaucho"); break;
-            case 7: strcpy(nome2, "20comer 70correr"); break;
-        }
+        nome1 = nomeCobra(escolha1);
+        nome2 = nomeCobra(escolha2);
 
         printf("\nJogador 1 sera: %s\n", nome1);
         printf("Jogador 2 sera: %s\n", nome2);
 
-        // sorteia quem comeca
         jogadorAtual = rand() % 2 + 1;
         printf("\n%s comeca!\n", (jogadorAtual == 1) ? nome1 : nome2);
 
-        // sorteia posicao da cobra e do botao garantindo que sejam diferentes
         cobra = rand() % 5;
         botao = rand() % 5;
         while (botao == cobra) botao = rand() % 5;
 
-        // loop principal do jogo
         while (1) {
-            printf("\n%s escolha uma caixa (1-5): ", (jogadorAtual == 1) ? nome1 : nome2);
+            const char *nomeAtual = (jogadorAtual == 1) ? nome1 : nome2;
+            printf("\n%s escolha uma caixa (1-5): ", nomeAtual);
             caixa = lerNumero();
 
             if (caixa < 1 || caixa > 5) {
@@ -271,7 +254,7 @@ void jogoCobraCaixa() {
 
             int pos = caixa - 1;
 
-            if (caixas[pos] == 1) {
+            if (caixas[pos]) {
                 printf("Essa caixa ja foi escolhida!\n");
                 continue;
             }
@@ -279,183 +262,146 @@ void jogoCobraCaixa() {
             caixas[pos] = 1;
 
             if (pos == cobra) {
-                printf("Voce encontrou a COBRA!\n");
-                printf("%s perdeu!\n", (jogadorAtual == 1) ? nome1 : nome2);
+                printf("Voce encontrou a COBRA! %s perdeu!\n", nomeAtual);
                 break;
             } else if (pos == botao) {
-                printf("Voce encontrou o BOTAO!\n");
-                printf("%s venceu!\n", (jogadorAtual == 1) ? nome1 : nome2);
+                printf("Voce encontrou o BOTAO! %s venceu!\n", nomeAtual);
                 break;
             } else {
                 printf("Caixa vazia!\n");
             }
 
-            // passa o turno para o outro jogador
             jogadorAtual = (jogadorAtual == 1) ? 2 : 1;
         }
 
-        printf("\n\n ** DESEJA JOGAR NOVAMENTE? **\n");
-        printf("1- SIM   2- NAO\n");
-        dnv = lerNumero();
-        if (dnv != 2) system("cls");
-
-    } while (dnv != 2);
+    } while (jogarNovamente());
 }
 
+/* ===== JOGO 3: GOUSMAS WAR ===== */
 
-//   JOGO 3 - GOUSMAS WAR
-
-
-// mostra na tela a furia e o estado de todas as gousmas
 void exibirEstado(int furia[], int ativa[]) {
     printf("\n  +======================+\n");
     printf("  |   ESTADO DO JOGO     |\n");
     printf("  +======================+\n");
 
-    if (ativa[0] == 1)
-        printf("  Jogador 1 - Gousma 1: furia %d\n", furia[0]);
-    else
-        printf("  Jogador 1 - Gousma 1: DESTRUIDA\n");
-
-    if (ativa[1] == 1)
-        printf("  Jogador 1 - Gousma 2: furia %d\n", furia[1]);
-    else
-        printf("  Jogador 1 - Gousma 2: DESTRUIDA\n");
-
-    printf("  ----------------------\n");
-
-    if (ativa[2] == 1)
-        printf("  Jogador 2 - Gousma 1: furia %d\n", furia[2]);
-    else
-        printf("  Jogador 2 - Gousma 1: DESTRUIDA\n");
-
-    if (ativa[3] == 1)
-        printf("  Jogador 2 - Gousma 2: furia %d\n", furia[3]);
-    else
-        printf("  Jogador 2 - Gousma 2: DESTRUIDA\n");
+    for (int j = 0; j < 2; j++) {
+        for (int g = 0; g < 2; g++) {
+            int idx = j * 2 + g;
+            if (ativa[idx])
+                printf("  Jogador %d - Gousma %d: furia %d\n", j + 1, g + 1, furia[idx]);
+            else
+                printf("  Jogador %d - Gousma %d: DESTRUIDA\n", j + 1, g + 1);
+        }
+        if (j == 0) printf("  ----------------------\n");
+    }
 
     printf("  +======================+\n\n");
 }
 
-// checa se alguma gousma passou de furia 5 e a marca como destruida
 void verificarDestruicao(int furia[], int ativa[]) {
-    if (furia[0] > 5 && ativa[0] == 1) {
-        ativa[0] = 0;
-        printf("  Gousma 1 do Jogador 1 foi DESTRUIDA!\n");
-    }
-    if (furia[1] > 5 && ativa[1] == 1) {
-        ativa[1] = 0;
-        printf("  Gousma 2 do Jogador 1 foi DESTRUIDA!\n");
-    }
-    if (furia[2] > 5 && ativa[2] == 1) {
-        ativa[2] = 0;
-        printf("  Gousma 1 do Jogador 2 foi DESTRUIDA!\n");
-    }
-    if (furia[3] > 5 && ativa[3] == 1) {
-        ativa[3] = 0;
-        printf("  Gousma 2 do Jogador 2 foi DESTRUIDA!\n");
+    const char *nomes[4] = {
+        "Gousma 1 do Jogador 1",
+        "Gousma 2 do Jogador 1",
+        "Gousma 1 do Jogador 2",
+        "Gousma 2 do Jogador 2"
+    };
+
+    for (int i = 0; i < 4; i++) {
+        if (furia[i] > 5 && ativa[i]) {
+            ativa[i] = 0;
+            printf("  %s foi DESTRUIDA!\n", nomes[i]);
+        }
     }
 }
 
-// verifica se algum jogador ficou sem gousmas
-// retorna 1 se jogador 1 venceu, 2 se jogador 2 venceu, 0 se continua
 int verificarFimDeJogo(int ativa[]) {
-    if (ativa[0] == 0 && ativa[1] == 0) return 2;
-    if (ativa[2] == 0 && ativa[3] == 0) return 1;
+    if (!ativa[0] && !ativa[1]) return 2;
+    if (!ativa[2] && !ativa[3]) return 1;
     return 0;
 }
 
-// jogador escolhe uma gousma sua para atacar uma gousma inimiga
-int ataca(int furia[], int ativa[], int jogador) {
+int atacar(int furia[], int ativa[], int jogador) {
     int atacante, alvo;
-
-    int minha_base, base_inimiga;
-    if (jogador == 1) { minha_base = 0; base_inimiga = 2; }
-    else              { minha_base = 2; base_inimiga = 0; }
+    int minha  = (jogador == 1) ? 0 : 2;
+    int inimigo = (jogador == 1) ? 2 : 0;
 
     printf("  Escolha sua Gousma para atacar (1 ou 2): ");
     while (1) {
         atacante = lerNumero();
-
-        if (atacante == 1 || atacante == 2) {
-            if (ativa[minha_base + atacante - 1] == 1) break;
-            else printf("  Essa Gousma esta destruida! Escolha outra: ");
-        } else {
+        if ((atacante == 1 || atacante == 2) && ativa[minha + atacante - 1]) break;
+        if (atacante == 1 || atacante == 2)
+            printf("  Essa Gousma esta destruida! Escolha outra: ");
+        else
             printf("  Opcao invalida! Escolha 1 ou 2: ");
-        }
     }
 
     printf("  Escolha a Gousma do adversario para atacar (1 ou 2): ");
     while (1) {
         alvo = lerNumero();
-
-        if (alvo == 1 || alvo == 2) {
-            if (ativa[base_inimiga + alvo - 1] == 1) break;
-            else printf("  Essa Gousma esta destruida! Escolha outra: ");
-        } else {
+        if ((alvo == 1 || alvo == 2) && ativa[inimigo + alvo - 1]) break;
+        if (alvo == 1 || alvo == 2)
+            printf("  Essa Gousma esta destruida! Escolha outra: ");
+        else
             printf("  Opcao invalida! Escolha 1 ou 2: ");
-        }
     }
 
-    int iA = minha_base + atacante - 1;
-    int iAlvo = base_inimiga + alvo - 1;
-
+    int iA    = minha   + atacante - 1;
+    int iAlvo = inimigo + alvo - 1;
     int antes = furia[iAlvo];
+
     furia[iAlvo] += furia[iA];
 
-    printf("  Gousma %d atacou!\n", atacante);
-    printf("  Furia: %d -> %d\n", antes, furia[iAlvo]);
+    printf("  Gousma %d atacou! Furia: %d -> %d\n", atacante, antes, furia[iAlvo]);
 
     verificarDestruicao(furia, ativa);
+    return 1;
+}
 
-    return 1; // jogada válida
-} 
+int dividir(int furia[], int ativa[], int jogador) {
+    int minha = (jogador == 1) ? 0 : 2;
 
-// jogador transfere parte da furia de uma gousma para a outra
-int dividi(int furia[], int ativa[], int jogador) {
-    int doadora, quantidade;
-
-    int minha_base = (jogador == 1) ? 0 : 2;
-
+    /* Verifica se existe alguma Gousma que pode dividir */
     int podeDividir = 0;
-    for(int i = 0; i < 2; i++){
-        if(ativa[minha_base + i] == 1 && furia[minha_base + i] > 1){
+    for (int i = 0; i < 2; i++) {
+        if (ativa[minha + i] && furia[minha + i] > 1) {
             podeDividir = 1;
+            break;
         }
     }
 
-    if(!podeDividir){
+    if (!podeDividir) {
         printf("  Nenhuma Gousma pode dividir!\n");
-        return 0; // NÃO troca turno
+        return 0;
     }
+
+    int doadora, quantidade;
 
     printf("  Escolha a Gousma que vai transferir (1 ou 2): ");
     doadora = lerNumero();
 
-    if(doadora != 1 && doadora != 2){
+    if (doadora != 1 && doadora != 2) {
         printf("  Invalido!\n");
         return 0;
     }
 
-    int iD = minha_base + doadora - 1;
-    int iR = (doadora == 1) ? minha_base + 1 : minha_base;
+    int iD = minha + doadora - 1;
+    int iR = (doadora == 1) ? minha + 1 : minha;
 
-    if(!ativa[iD] || furia[iD] <= 1){
-        printf("  Nao pode usar essa!\n");
+    if (!ativa[iD] || furia[iD] <= 1) {
+        printf("  Nao pode usar essa Gousma!\n");
         return 0;
     }
 
-    int max = furia[iD] - 1;
-
-    printf("  Transferir (1-%d): ", max);
+    int maxTransf = furia[iD] - 1;
+    printf("  Transferir (1-%d): ", maxTransf);
     quantidade = lerNumero();
 
-    if(quantidade < 1 || quantidade > max){
+    if (quantidade < 1 || quantidade > maxTransf) {
         printf("  Valor invalido!\n");
         return 0;
     }
 
-    if(!ativa[iR]){
+    if (!ativa[iR]) {
         ativa[iR] = 1;
         printf("  Gousma reviveu!\n");
     }
@@ -464,83 +410,53 @@ int dividi(int furia[], int ativa[], int jogador) {
     furia[iR] += quantidade;
 
     verificarDestruicao(furia, ativa);
-
     return 1;
-} 
-// funcao principal do gousmas war, controla os turnos
+}
+
 void jogoGousmasWar() {
-    int dnv;
-
     do {
-        int furia[4] = {1, 1, 1, 1};
-        int ativa[4] = {1, 1, 1, 1};
+        int furia[4]  = {1, 1, 1, 1};
+        int ativa[4]  = {1, 1, 1, 1};
         int jogadorAtual = 1;
-        int acao, limpar;
 
-        // tela inicial
-        do {
-            printf("  +--------------------------------------+\n");
-            printf("  |           GOUSMAS WAR                |\n");
-            printf("  +--------------------------------------+\n\n");
-            printf("  === DESCRICAO ===\n");
-            printf("  Dois jogadores controlam 2 Gousmas cada.\n");
-            printf("  Cada Gousma comeca com furia 1.\n");
-            printf("  Se a furia passar de 5, a Gousma e destruida.\n");
-            printf("  Quem ficar sem Gousmas perde!\n\n");
-            printf("  = PRESSIONE 1 PARA CONTINUAR = \n");
-            limpar = lerNumero();
+        printf("  +--------------------------------------+\n");
+        printf("  |           GOUSMAS WAR                |\n");
+        printf("  +--------------------------------------+\n\n");
+        printf("  === DESCRICAO ===\n");
+        printf("  Dois jogadores controlam 2 Gousmas cada.\n");
+        printf("  Cada Gousma comeca com furia 1.\n");
+        printf("  Se a furia passar de 5, a Gousma e destruida.\n");
+        printf("  Quem ficar sem Gousmas perde!\n\n");
+        printf("  Pressione 1 para continuar: ");
 
-        } while (limpar != 1);
-
+        while (lerNumero() != 1);
         system("cls");
 
-        // loop principal
         while (1) {
-    exibirEstado(furia, ativa);
+            exibirEstado(furia, ativa);
+            printf("  --- Turno do Jogador %d ---\n", jogadorAtual);
+            printf("  1 - Atacar\n  2 - Dividir\n  Escolha: ");
 
-    printf("  --- Turno do Jogador %d ---\n", jogadorAtual);
-    printf("  1 - Atacar\n");
-    printf("  2 - Dividir\n");
-    printf("  Escolha: ");
+            int acao = lerNumero();
+            int fezJogada = 0;
 
-    acao = lerNumero();
+            if (acao == 1)
+                fezJogada = atacar(furia, ativa, jogadorAtual);
+            else if (acao == 2)
+                fezJogada = dividir(furia, ativa, jogadorAtual);
+            else
+                printf("  Opcao invalida!\n");
 
-    int fezJogada = 0;
+            int resultado = verificarFimDeJogo(ativa);
+            if (resultado != 0) {
+                exibirEstado(furia, ativa);
+                printf("  *** JOGADOR %d VENCEU! ***\n\n", resultado);
+                break;
+            }
 
-    if (acao == 1) {
-        fezJogada = ataca(furia, ativa, jogadorAtual);
-    }
-    else if (acao == 2) {
-        fezJogada = dividi(furia, ativa, jogadorAtual);
-    }
-    else {
-        printf("  Opcao invalida!\n");
-        continue;
-    }
-
-    int resultado = verificarFimDeJogo(ativa);
-    if (resultado != 0) {
-        exibirEstado(furia, ativa);
-        printf("  *** JOGADOR %d VENCEU! ***\n\n", resultado);
-        break;
-    }
-
-    //SÓ TROCA SE FOR VALIDO
-    if (fezJogada)
-        jogadorAtual = (jogadorAtual == 1) ? 2 : 1;
-} 
-
-        printf("\n ** DESEJA JOGAR NOVAMENTE? **\n");
-        printf("\n      1- SIM         2- NAO      \n");
-        printf("Escolha: ");
-
-        while (1) {
-            dnv = lerNumero();
-            if (dnv == 1 || dnv == 2) break;
-            printf("  Escolha 1 ou 2: ");
+            if (fezJogada)
+                jogadorAtual = (jogadorAtual == 1) ? 2 : 1;
         }
 
-        if (dnv != 2) system("cls");
-
-    } while (dnv != 2);
+    } while (jogarNovamente());
 } 
