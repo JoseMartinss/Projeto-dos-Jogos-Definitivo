@@ -34,7 +34,7 @@ int main() {
         printf("  2 - Cobra na Caixa\n");
         printf("  3 - Gousmas War\n");
         printf("  4 - Sair\n\n");
-        printf("  Escolha uma opcao: ");
+        printf("  Escolha uma opção: ");
 
         // repete ate receber uma opcao valida
         while (1) {
@@ -366,22 +366,17 @@ int verificarFimDeJogo(int ativa[]) {
 }
 
 // jogador escolhe uma gousma sua para atacar uma gousma inimiga
-void atacar(int furia[], int ativa[], int jogador) {
+int ataca(int furia[], int ativa[], int jogador) {
     int atacante, alvo;
 
-    // define as posicoes no vetor de cada jogador
     int minha_base, base_inimiga;
     if (jogador == 1) { minha_base = 0; base_inimiga = 2; }
     else              { minha_base = 2; base_inimiga = 0; }
 
-    // pede a gousma atacante
     printf("  Escolha sua Gousma para atacar (1 ou 2): ");
     while (1) {
-        if (scanf("%d", &atacante) != 1) {
-            while (getchar() != '\n');
-            printf("  Escolha 1 ou 2: ");
-            continue;
-        }
+        atacante = lerNumero();
+
         if (atacante == 1 || atacante == 2) {
             if (ativa[minha_base + atacante - 1] == 1) break;
             else printf("  Essa Gousma esta destruida! Escolha outra: ");
@@ -390,14 +385,10 @@ void atacar(int furia[], int ativa[], int jogador) {
         }
     }
 
-    // pede a gousma alvo
     printf("  Escolha a Gousma do adversario para atacar (1 ou 2): ");
     while (1) {
-        if (scanf("%d", &alvo) != 1) {
-            while (getchar() != '\n');
-            printf("  Escolha 1 ou 2: ");
-            continue;
-        }
+        alvo = lerNumero();
+
         if (alvo == 1 || alvo == 2) {
             if (ativa[base_inimiga + alvo - 1] == 1) break;
             else printf("  Essa Gousma esta destruida! Escolha outra: ");
@@ -406,98 +397,87 @@ void atacar(int furia[], int ativa[], int jogador) {
         }
     }
 
-    int indice_atacante = minha_base + atacante - 1;
-    int indice_alvo = base_inimiga + alvo - 1;
-    int furia_antes = furia[indice_alvo];
+    int iA = minha_base + atacante - 1;
+    int iAlvo = base_inimiga + alvo - 1;
 
-    // aplica o ataque
-    furia[indice_alvo] += furia[indice_atacante];
+    int antes = furia[iAlvo];
+    furia[iAlvo] += furia[iA];
 
-    printf("  Gousma %d do Jogador %d atacou a Gousma %d do adversario!\n", atacante, jogador, alvo);
-    printf("  Furia do alvo foi de %d para %d!\n", furia_antes, furia[indice_alvo]);
+    printf("  Gousma %d atacou!\n", atacante);
+    printf("  Furia: %d -> %d\n", antes, furia[iAlvo]);
 
     verificarDestruicao(furia, ativa);
-}
+
+    return 1; // jogada válida
+} 
 
 // jogador transfere parte da furia de uma gousma para a outra
-void dividir(int furia[], int ativa[], int jogador) {
+int dividi(int furia[], int ativa[], int jogador) {
     int doadora, quantidade;
 
-    // define a posicao no vetor do jogador atual
-    int minha_base;
-    if (jogador == 1) minha_base = 0;
-    else              minha_base = 2;
+    int minha_base = (jogador == 1) ? 0 : 2;
 
-    // pede a gousma doadora
-    printf("  Escolha a Gousma que vai transferir furia (1 ou 2): ");
-    while (1) {
-        if (scanf("%d", &doadora) != 1) {
-            while (getchar() != '\n');
-            printf("  Escolha 1 ou 2: ");
-            continue;
-        }
-        if (doadora == 1 || doadora == 2) {
-            if (ativa[minha_base + doadora - 1] == 0)
-                printf("  Essa Gousma esta destruida! Escolha outra: ");
-            else if (furia[minha_base + doadora - 1] <= 1)
-                printf("  Essa Gousma tem furia 1, nao pode transferir! Escolha outra: ");
-            else
-                break;
-        } else {
-            printf("  Opcao invalida! Escolha 1 ou 2: ");
+    int podeDividir = 0;
+    for(int i = 0; i < 2; i++){
+        if(ativa[minha_base + i] == 1 && furia[minha_base + i] > 1){
+            podeDividir = 1;
         }
     }
 
-    // a receptora e sempre a outra gousma
-    int indice_doadora, indice_receptora;
-    if (doadora == 1) { indice_doadora = minha_base + 0; indice_receptora = minha_base + 1; }
-    else              { indice_doadora = minha_base + 1; indice_receptora = minha_base + 0; }
-
-    // nao pode zerar a doadora
-    int max_transferir = furia[indice_doadora] - 1;
-    printf("  Gousma doadora tem furia %d. Voce pode transferir entre 1 e %d pontos.\n",
-        furia[indice_doadora], max_transferir);
-    printf("  Quantos pontos deseja transferir? ");
-
-    while (1) {
-        if (scanf("%d", &quantidade) != 1) {
-            while (getchar() != '\n');
-            printf("  Transfira entre 1 e %d: ", max_transferir);
-            continue;
-        }
-        if (quantidade >= 1 && quantidade <= max_transferir) break;
-        printf("  Valor invalido! Transfira entre 1 e %d: ", max_transferir);
+    if(!podeDividir){
+        printf("  Nenhuma Gousma pode dividir!\n");
+        return 0; // NÃO troca turno
     }
 
-    // se a receptora estava destruida ela revive
-    if (ativa[indice_receptora] == 0) {
-        ativa[indice_receptora] = 1;
-        printf("  Gousma %d REVIVEU!\n", (doadora == 1) ? 2 : 1);
+    printf("  Escolha a Gousma que vai transferir (1 ou 2): ");
+    doadora = lerNumero();
+
+    if(doadora != 1 && doadora != 2){
+        printf("  Invalido!\n");
+        return 0;
     }
 
-    // aplica a transferencia
-    furia[indice_doadora] -= quantidade;
-    furia[indice_receptora] += quantidade;
+    int iD = minha_base + doadora - 1;
+    int iR = (doadora == 1) ? minha_base + 1 : minha_base;
 
-    printf("  Transferencia feita!\n");
-    printf("  Gousma doadora: furia %d | Gousma receptora: furia %d\n",
-        furia[indice_doadora], furia[indice_receptora]);
+    if(!ativa[iD] || furia[iD] <= 1){
+        printf("  Nao pode usar essa!\n");
+        return 0;
+    }
+
+    int max = furia[iD] - 1;
+
+    printf("  Transferir (1-%d): ", max);
+    quantidade = lerNumero();
+
+    if(quantidade < 1 || quantidade > max){
+        printf("  Valor invalido!\n");
+        return 0;
+    }
+
+    if(!ativa[iR]){
+        ativa[iR] = 1;
+        printf("  Gousma reviveu!\n");
+    }
+
+    furia[iD] -= quantidade;
+    furia[iR] += quantidade;
 
     verificarDestruicao(furia, ativa);
-}
 
+    return 1;
+} 
 // funcao principal do gousmas war, controla os turnos
 void jogoGousmasWar() {
     int dnv;
 
     do {
-        // reinicia o estado do jogo a cada nova partida
         int furia[4] = {1, 1, 1, 1};
         int ativa[4] = {1, 1, 1, 1};
         int jogadorAtual = 1;
         int acao, limpar;
 
-        // mostra a descricao e espera o jogador pressionar 1
+        // tela inicial
         do {
             printf("  +--------------------------------------+\n");
             printf("  |           GOUSMAS WAR                |\n");
@@ -508,64 +488,59 @@ void jogoGousmasWar() {
             printf("  Se a furia passar de 5, a Gousma e destruida.\n");
             printf("  Quem ficar sem Gousmas perde!\n\n");
             printf("  = PRESSIONE 1 PARA CONTINUAR = \n");
+            limpar = lerNumero();
 
-            if (scanf("%d", &limpar) != 1) {
-                while (getchar() != '\n');
-            }
         } while (limpar != 1);
 
         system("cls");
 
-        // loop principal, continua ate alguem vencer
+        // loop principal
         while (1) {
-            exibirEstado(furia, ativa);
+    exibirEstado(furia, ativa);
 
-            printf("  --- Turno do Jogador %d ---\n", jogadorAtual);
-            printf("  1 - Atacar\n");
-            printf("  2 - Dividir\n");
-            printf("  Escolha uma ação: ");
+    printf("  --- Turno do Jogador %d ---\n", jogadorAtual);
+    printf("  1 - Atacar\n");
+    printf("  2 - Dividir\n");
+    printf("  Escolha: ");
 
-            // repete ate receber uma acao valida
-            while (1) {
-                if (scanf("%d", &acao) != 1) {
-                    while (getchar() != '\n');
-                    printf("  Escolha 1 ou 2: ");
-                    continue;
-                }
-                if (acao == 1 || acao == 2) break;
-                printf("  Opcao invalida! Escolha 1 ou 2: ");
-            }
+    acao = lerNumero();
 
-            if (acao == 1) atacar(furia, ativa, jogadorAtual);
-            else           dividir(furia, ativa, jogadorAtual);
+    int fezJogada = 0;
 
-            // verifica se o jogo acabou
-            int resultado = verificarFimDeJogo(ativa);
-            if (resultado != 0) {
-                exibirEstado(furia, ativa);
-                printf("  *** JOGADOR %d VENCEU! ***\n\n", resultado);
-                break;
-            }
+    if (acao == 1) {
+        fezJogada = ataca(furia, ativa, jogadorAtual);
+    }
+    else if (acao == 2) {
+        fezJogada = dividi(furia, ativa, jogadorAtual);
+    }
+    else {
+        printf("  Opcao invalida!\n");
+        continue;
+    }
 
-            // passa o turno para o outro jogador
-            if (jogadorAtual == 1) jogadorAtual = 2;
-            else                   jogadorAtual = 1;
-        }
+    int resultado = verificarFimDeJogo(ativa);
+    if (resultado != 0) {
+        exibirEstado(furia, ativa);
+        printf("  *** JOGADOR %d VENCEU! ***\n\n", resultado);
+        break;
+    }
 
-        // pergunta se quer jogar novamente
+    //SÓ TROCA SE FOR VALIDO
+    if (fezJogada)
+        jogadorAtual = (jogadorAtual == 1) ? 2 : 1;
+} 
+
         printf("\n ** DESEJA JOGAR NOVAMENTE? **\n");
         printf("\n      1- SIM         2- NAO      \n");
         printf("Escolha: ");
+
         while (1) {
-            if (scanf("%d", &dnv) != 1) {
-                while (getchar() != '\n');
-                printf("  Escolha 1 ou 2: ");
-                continue;
-            }
+            dnv = lerNumero();
             if (dnv == 1 || dnv == 2) break;
-            printf("  Opcao invalida! Escolha 1 ou 2: ");
+            printf("  Escolha 1 ou 2: ");
         }
+
         if (dnv != 2) system("cls");
 
     } while (dnv != 2);
-}
+} 
