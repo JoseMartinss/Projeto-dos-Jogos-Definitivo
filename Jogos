@@ -352,6 +352,8 @@ int verificarFimDeJogo(int ativa[]) {
 void atacar(int furia[], int ativa[], int jogador) {
     int atacante, alvo;
 
+	//mudar aqui se quiser alterar força do ataque
+	//essa subtração é pra fazer a escolha selecionar a posição correta no vetor
     int minha_base, base_inimiga;
     if (jogador == 1) { minha_base = 0; base_inimiga = 2; }
     else              { minha_base = 2; base_inimiga = 0; }
@@ -450,7 +452,7 @@ void jogoGousmasWar() {
         // para alterar a furia inicial de uma gousma, mude o valor na posicao correspondente
         int furia[4] = {1, 1, 1, 1};
         int ativa[4] = {1, 1, 1, 1};
-        int jogadorAtual = 1;
+        int jogadorAtual = 1; //quem comeca (1= J1, 2= J2)
         int acao, limpar;
 
         do {
