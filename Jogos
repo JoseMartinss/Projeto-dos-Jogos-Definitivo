@@ -75,6 +75,8 @@ void jogoPerguntas() {
     char continuar;
 
     do {
+    	int acertos = 0; //pra contar qnts acertos vc fez
+    	
         printf("  +--------------------------------------+\n");
         printf("  |         PERGUNTAS E RESPOSTAS        |\n");
         printf("  +--------------------------------------+\n\n");
@@ -97,14 +99,18 @@ void jogoPerguntas() {
             if (resposta >= 1 && resposta <= 4) break;
             printf("  Numero invalido! Digite apenas de 1 a 4: ");
         }
-        if (resposta == 3)
+        if (resposta == 3){
             printf("\n  RESPOSTA CORRETA! Pelo visto alguem assistiu Star Wars.\n\n");
-        else
+        	
+        	acertos++; //vai adicionando os acertos (vai ter isso em todas respostas corretas)
+		}
+        else{
             printf("\n  RESPOSTA INCORRETA! Resposta certa: Estrela da Morte\n\n");
+		}
         printf("  Pressione qualquer letra para continuar: ");
         scanf(" %c", &continuar);
         system("cls");
-
+		
         // pergunta 2
         printf("  +--------------------------------------+\n");
         printf("  |            SEGUNDA PERGUNTA          |\n");
@@ -117,10 +123,14 @@ void jogoPerguntas() {
             if (resposta >= 1 && resposta <= 4) break;
             printf("  Numero invalido! Digite apenas de 1 a 4: ");
         }
-        if (resposta == 4)
+        if (resposta == 4){
             printf("\n  RESPOSTA CORRETA! Epoca boa ne?\n\n");
-        else
+        
+        	acertos++;
+		}
+		else{
             printf("\n  RESPOSTA INCORRETA! Resposta certa: O suposto irmao falecido de Notch\n\n");
+		}
         printf("  Pressione qualquer letra para continuar: ");
         scanf(" %c", &continuar);
         system("cls");
@@ -137,10 +147,14 @@ void jogoPerguntas() {
             if (resposta >= 1 && resposta <= 4) break;
             printf("  Numero invalido! Digite apenas de 1 a 4: ");
         }
-        if (resposta == 2)
+        if (resposta == 2){
             printf("\n  RESPOSTA CORRETA! Serie muito boa!\n\n");
-        else
+        
+        	acertos++;
+		}
+        else{
             printf("\n  RESPOSTA INCORRETA! Resposta certa: Morfeus\n\n");
+		}
         printf("  Pressione qualquer letra para continuar: ");
         scanf(" %c", &continuar);
         system("cls");
@@ -150,17 +164,21 @@ void jogoPerguntas() {
         printf("  |           QUARTA PERGUNTA            |\n");
         printf("  +--------------------------------------+\n\n");
         printf("  Comendo determinado numero de bananas voce morre por radiacao, que numero e esse?\n");
-        printf("  1 - 100000000\n  2 - 80000000\n  3 - meio bananao grosso\n  4 - 18000\n");
+        printf("  1 - 100000000\n  2 - 80000000\n  3 - meio bananao \n  4 - 18000\n");
         printf("\n  Digite o numero da sua resposta: ");
         while (1) {
             resposta = lerNumero();
             if (resposta >= 1 && resposta <= 4) break;
             printf("  Numero invalido! Digite apenas de 1 a 4: ");
         }
-        if (resposta == 2)
+        if (resposta == 2){
             printf("\n  RESPOSTA CORRETA! Temos um especialista em bananas aqui!\n\n");
-        else
+        
+        	acertos++;
+		}
+        else{
             printf("\n  RESPOSTA INCORRETA! Resposta certa: 80000000\n\n");
+		}
         printf("  Pressione qualquer letra para continuar: ");
         scanf(" %c", &continuar);
         system("cls");
@@ -177,14 +195,21 @@ void jogoPerguntas() {
             if (resposta >= 1 && resposta <= 4) break;
             printf("  Numero invalido! Digite apenas de 1 a 4: ");
         }
-        if (resposta == 3)
+        if (resposta == 3){
             printf("\n  RESPOSTA CORRETA! Muito bem!!\n\n");
-        else
+        
+        	acertos++;
+		}
+        else{
             printf("\n  RESPOSTA INCORRETA! Resposta certa: Nick Fury\n\n");
+		}
         printf("  Pressione qualquer letra para continuar: ");
         scanf(" %c", &continuar);
         system("cls");
 
+		//pra mostrar quantidade de acertos
+		printf("\n ** TOTAL DE ACERTOS: %d de 5 **\n", acertos);
+		
         // pergunta se quer jogar novamente
         printf("\n ** DESEJA JOGAR NOVAMENTE? **\n");
         printf("\n      1- SIM         2- NAO      \n");
