@@ -230,7 +230,7 @@ void jogoCobraCaixa() {
 
         printf("Escolha um nome:\n");
         printf("1 - robertinho do grau\n2 - geremias\n3 - steave\n");
-        printf("4 - olavo de carvalho\n5 - jalin rabei\n6 - ronaldinho gaucho\n7 - 20comer 70correr\n");
+        printf("4 - olavo de carvalho\n5 - ladrao de provas\n6 - ronaldinho gaucho\n7 - Girotox\n");
 
         while (1) {
             printf("\nJogador 1 escolha um numero: ");
@@ -251,9 +251,9 @@ void jogoCobraCaixa() {
             case 2: strcpy(nome1, "geremias"); break;
             case 3: strcpy(nome1, "steave"); break;
             case 4: strcpy(nome1, "olavo de carvalho"); break;
-            case 5: strcpy(nome1, "jalin rabei"); break;
+            case 5: strcpy(nome1, "ladrao de provas"); break;
             case 6: strcpy(nome1, "ronaldinho gaucho"); break;
-            case 7: strcpy(nome1, "20comer 70correr"); break;
+            case 7: strcpy(nome1, "Girotox"); break;
         }
 
         switch (escolha2) {
@@ -261,9 +261,9 @@ void jogoCobraCaixa() {
             case 2: strcpy(nome2, "geremias"); break;
             case 3: strcpy(nome2, "steave"); break;
             case 4: strcpy(nome2, "olavo de carvalho"); break;
-            case 5: strcpy(nome2, "jalin rabei"); break;
+            case 5: strcpy(nome2, "ladrao de provas"); break;
             case 6: strcpy(nome2, "ronaldinho gaucho"); break;
-            case 7: strcpy(nome2, "20comer 70correr"); break;
+            case 7: strcpy(nome2, "Girotox"); break;
         }
 
         printf("\nJogador 1 sera: %s\n", nome1);
@@ -542,6 +542,7 @@ void jogoGousmasWar() {
             if (jogadorAtual == 1) jogadorAtual = 2;
             else                   jogadorAtual = 1;
         }
+
 
         printf("\n ** DESEJA JOGAR NOVAMENTE? **\n");
         printf("\n      1- SIM         2- NAO      \n");
