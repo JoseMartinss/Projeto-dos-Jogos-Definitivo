@@ -18,7 +18,7 @@ void dividir(int furia[], int ativa[], int jogador);
 /* ===== MENU PRINCIPAL ===== */
 int main() {
     setlocale(LC_ALL, "Portuguese");
-    srand(time(NULL));
+    srand(time(NULL)); //faz parte do cobra na caixa, de fora p/ garantir random
 
     int opcao;
 
@@ -226,7 +226,8 @@ void jogoCobraCaixa() {
     char nome1[50], nome2[50];
 
     do {
-        int caixas[5] = {0};
+        int caixas[5] = {0}; /*5 posicoes no vetor reservadas com valor 0, forma
+		de abreviar */
 
         printf("Escolha um nome:\n");
         printf("1 - robertinho do grau\n2 - geremias\n3 - steave\n");
@@ -285,7 +286,7 @@ void jogoCobraCaixa() {
                 continue;
             }
 
-            int pos = caixa - 1;
+            int pos = caixa - 1; //menos 1 pra se adaptar ao vetor (0 a 4)
 
             if (caixas[pos] == 1) {
                 printf("Essa caixa ja foi escolhida!\n");
@@ -350,6 +351,8 @@ void exibirEstado(int furia[], int ativa[]) {
 }
 
 void verificarDestruicao(int furia[], int ativa[]) {
+	
+	/* pra mudar o maximo pra ser destruido é aqui*/
     if (furia[0] > 5 && ativa[0] == 1) {
         ativa[0] = 0;
         printf("  Gousma 1 do Jogador 1 foi DESTRUIDA!\n");
@@ -369,6 +372,8 @@ void verificarDestruicao(int furia[], int ativa[]) {
 }
 
 int verificarFimDeJogo(int ativa[]) {
+	
+	/* ora mudar condição pra acabar o jogo é aqui papis*/
     if (ativa[0] == 0 && ativa[1] == 0) return 2;
     if (ativa[2] == 0 && ativa[3] == 0) return 1;
     return 0;
@@ -377,7 +382,6 @@ int verificarFimDeJogo(int ativa[]) {
 void atacar(int furia[], int ativa[], int jogador) {
     int atacante, alvo;
 
-	//mudar aqui se quiser alterar força do ataque
 	//essa subtração é pra fazer a escolha selecionar a posição correta no vetor
     int minha_base, base_inimiga;
     if (jogador == 1) { minha_base = 0; base_inimiga = 2; }
@@ -409,12 +413,13 @@ void atacar(int furia[], int ativa[], int jogador) {
     int indice_alvo     = base_inimiga + alvo - 1;
     int furia_antes     = furia[indice_alvo];
 
+	//mudar aqui se quiser alterar força do ataque:
     furia[indice_alvo] += furia[indice_atacante];
 
     printf("  Gousma %d do Jogador %d atacou a Gousma %d do adversario!\n", atacante, jogador, alvo);
     printf("  Furia do alvo foi de %d para %d!\n", furia_antes, furia[indice_alvo]);
 
-    verificarDestruicao(furia, ativa);
+    verificarDestruicao(furia, ativa); //verifica apos cada ataque
 }
 
 void dividir(int furia[], int ativa[], int jogador) {
@@ -422,7 +427,7 @@ void dividir(int furia[], int ativa[], int jogador) {
 
     int minha_base;
     if (jogador == 1) minha_base = 0;
-    else              minha_base = 2;
+    else  minha_base = 2;
 
     printf("  Escolha a Gousma que vai transferir furia (1 ou 2): ");
     while (1) {
