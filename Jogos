@@ -81,7 +81,7 @@ void jogoPerguntas() {
         printf("  |         PERGUNTAS E RESPOSTAS        |\n");
         printf("  +--------------------------------------+\n\n");
         printf("  === DESCRICAO ===\n");
-        printf("  Serao apresentadas 5 perguntas com 4 alternativas cada.\n");
+        printf("  Serão apresentadas 5 perguntas com 4 alternativas cada.\n");
         printf("  Digite o numero da alternativa correta!\n\n");
         printf("  Pressione Enter para continuar: ");
         scanf("%c", &continuar);
@@ -164,7 +164,7 @@ void jogoPerguntas() {
         printf("  |           QUARTA PERGUNTA            |\n");
         printf("  +--------------------------------------+\n\n");
         printf("  Comendo determinado numero de bananas voce morre por radiacao, que numero e esse?\n");
-        printf("  1 - 100000000\n  2 - 80000000\n  3 - meio bananao \n  4 - 18000\n");
+        printf("  1 - 100000000\n  2 - 80000000\n  3 - 67 \n  4 - 18000\n");
         printf("\n  Digite o numero da sua resposta: ");
         while (1) {
             resposta = lerNumero();
